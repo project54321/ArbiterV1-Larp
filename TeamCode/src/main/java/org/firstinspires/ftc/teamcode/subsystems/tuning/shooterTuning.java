@@ -13,10 +13,7 @@ public class shooterTuning extends OpMode {
     //D - Derivative - Dampening force to prevent it from overshooting the target velocity.
     //F - Feed Forward - Minimum force u need to keep the motor from moving by gravity.
 
-    public double highVelocity = 1500;
-    public double lowVelocity = 900;
-
-    double curTargetVelocity = highVelocity;
+    public double vel = 1500; //change
 
     double f = 0;
     double p = 0;
@@ -38,15 +35,6 @@ public class shooterTuning extends OpMode {
 
     @Override
     public void loop() {
-        if (gamepad1.yWasPressed()) {
-            if(curTargetVelocity == highVelocity) {
-                curTargetVelocity = lowVelocity;
-            }
-            else {
-                curTargetVelocity = highVelocity;
-            }
-        }
-
         if (gamepad1.bWasPressed()) {
             stepIndex = (stepIndex + 1) % stepSizes.length;
         }
@@ -70,12 +58,12 @@ public class shooterTuning extends OpMode {
         PIDFCoefficients pidfCoefficients = new PIDFCoefficients(p, 0, 0, f);
         flywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
-        flywheel.setVelocity(curTargetVelocity);
+        flywheel.setVelocity(vel);
 
         double curVelocity = flywheel.getVelocity();
-        double error = curTargetVelocity-curVelocity;
+        double error = vel-curVelocity;
 
-        telemetry.addData("Target Velocity", curTargetVelocity);
+        telemetry.addData("Target Velocity", vel);
         telemetry.addData("Current Velocity", "%.2f", curVelocity);
         telemetry.addData("Error", "%.2f", error);
         telemetry.addData("Tuning P", "%.4f (D-Pad U/D)", p);
